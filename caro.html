@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Caro</title>
+    <style>
+        .xo {
+            border: 1px solid black;
+            position: absolute;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div><input type="button" onclick="newGame();" value="New Game"/></div>
+<div id="myGame" style="position: relative">
+
+</div>
+<script>
+    function newGame() {
+        myCaro.divMyGame.innerHTML = '  ';
+        start();
+    }
+    let myCaro = {};
+    myCaro.divMyGame = document.getElementById('myGame');
+    myCaro.strDiv = '';
+    myCaro.x = 20;
+    myCaro.y = 20;
+    myCaro.size = 25;
+    myCaro.won = false;
+    myCaro.ckXO = 0;
+    myCaro.arrCaro = [];
+    myCaro.drawDiv = function () {
+        for (let i = 0; i < myCaro.x; i++) {
+            let arr = [];
+            for (let j = 0; j < myCaro.y; j++) {
+                myCaro.strDiv += "<div class='xo' style='width: "+myCaro.size+"px;height: "+myCaro.size+"px;" +
+                    "top: "+(i*myCaro.size)+"px;" +
+                    "left: "+(j*myCaro.size)+"px;" +
+                    "line-height: "+myCaro.size+"px'" +
+                    "onclick='playGame("+i+","+j+");'" +
+                    "id='cell"+i+"-"+j+"'></div>";
+                arr.push(i+''+j);
+            }
+            myCaro.arrCaro.push(arr);
+        }
+        myCaro.divMyGame.innerHTML = myCaro.strDiv;
+    }
+
+    function playGame(i,j) {
+        if (!myCaro.won) {
+            let divCell = document.getElementById('cell'+i+'-'+j);
+            if (divCell.innerHTML == ''){
+                divCell.innerHTML = checkCell(i,j);
+            }
+            if (checkNgang(i,j) || checkDoc(i, j) || checkCheo1(i, j) || checkCheo2(i,j)) {
+                alert('You win');
+            }
+        }
+    }
+
+    function checkCheo2(i, j) {
+        let count = 1;
+        let dem = j + 1;
+        let num = j - 1;
+        for (let x = i - 1; x >= 0; x--) {
+            if (myCaro.arrCaro[x][num] == myCaro.arrCaro[i][j]) {
+                count++;
+                num--;
+            } else {
+                break;
+            }
+        }
+        for (let x = i + 1; x < myCaro.x; x++) {
+            if (myCaro.arrCaro[x][dem] == myCaro.arrCaro[i][j]) {
+                count++;
+                dem++;
+            } else {
+                break;
+            }
+        }
+        if (count >= 5) {
+            myCaro.won = true;
+            return true;
+        }
+        return false;
+    }
+
+    function checkCheo1(i, j) {
+        let count = 1;
+        let dem = j + 1;
+        let num = j - 1;
+        for (let x = i - 1; x >= 0; x--) {
+            if (myCaro.arrCaro[x][dem] == myCaro.arrCaro[i][j]) {
+                count++;
+                dem++;
+            } else {
+                break;
+            }
+        }
+        for (let x = i + 1; x < myCaro.x; x++) {
+            if (myCaro.arrCaro[x][num] == myCaro.arrCaro[i][j]) {
+                count++;
+                num--;
+            } else {
+                break;
+            }
+        }
+        if (count >= 5) {
+            myCaro.won = true;
+            return true;
+        }
+        return false;
+    }
+
+    function checkDoc(i,j) {
+        let count = 1;
+        for (let x = i - 1; x >= 0; x--) {
+            if (myCaro.arrCaro[x][j] == myCaro.arrCaro[i][j]) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        for (let x = i + 1; x < myCaro.x; x++) {
+            if (myCaro.arrCaro[x][j] == myCaro.arrCaro[i][j]) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if (count >= 5) {
+            myCaro.won = true;
+            return true;
+        }
+        return false;
+    }
+
+    function checkNgang(i,j) {
+        let count = 1;
+        for (let x=j-1;x>=0;x--) {
+            if (myCaro.arrCaro[i][x] == myCaro.arrCaro[i][j]) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        for (let x = j + 1; x < myCaro.y; x++) {
+            if (myCaro.arrCaro[i][x] == myCaro.arrCaro[i][j]) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if (count >= 5) {
+            myCaro.won = true;
+            return true;
+        }
+        return false;
+    }
+
+    function checkCell(i,j) {
+                if (myCaro.ckXO % 2 == 0) {
+                    myCaro.arrCaro[i][j] = 'O';
+                    myCaro.ckXO++;
+                    return 'O';
+                } else {
+                    myCaro.arrCaro[i][j] = 'X';
+                    myCaro.ckXO--;
+                    return 'X';
+                }
+    }
+
+    function start(){
+        myCaro.drawDiv();
+    }
+
+    start();
+
+</script>
+</body>
+</html>
